@@ -1,12 +1,26 @@
-import { HumanMessage, SystemMessage } from "@langchain/core/messages";
+import {
+	AIMessage,
+	HumanMessage,
+	SystemMessage,
+} from "@langchain/core/messages";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { NextResponse } from "next/server";
 import { vectorStore } from "@/lib/rag/utils";
 
+type Message = {
+	id: string;
+	role: "user" | "assistant";
+	content: string;
+	timestamp: Date;
+};
+
 export async function POST(req: Request) {
 	try {
 		const body = await req.json();
-		const { message } = body;
+		const { message, history = [] } = body as {
+			message: string;
+			history?: Message[];
+		};
 
 		if (!message || typeof message !== "string") {
 			return NextResponse.json(
@@ -40,10 +54,21 @@ ${docsContent}
 Please provide accurate, helpful answers based on the context above. If you cite specific information, don't mention which document it comes from.`,
 		);
 
+		// Convert chat history to LangChain message format
+		const historyMessages = history.map((msg) =>
+			msg.role === "user"
+				? new HumanMessage(msg.content)
+				: new AIMessage(msg.content),
+		);
+
 		const humanMessage = new HumanMessage(message);
 
-		// Invoke the model with context
-		const response = await model.invoke([systemMessage, humanMessage]);
+		// Invoke the model with context and full chat history
+		const response = await model.invoke([
+			systemMessage,
+			...historyMessages,
+			humanMessage,
+		]);
 
 		return NextResponse.json({
 			response: response.content,
