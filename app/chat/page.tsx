@@ -91,55 +91,55 @@ export default function ChatPage() {
 
 	return (
 		<div className="h-full w-full flex flex-col">
-			<div className="h-full w-full max-w-4xl mx-auto flex flex-col px-4">
+			<div className="h-full w-full max-w-4xl mx-auto flex flex-col px-2 sm:px-4">
 				{/* Header */}
-				<div className="text-center pt-4">
-					<h1 className="text-2xl font-bold">Legal Documents Q&A</h1>
-					<p className="text-muted-foreground text-sm">
+				<div className="text-center pt-2 sm:pt-4">
+					<h1 className="text-xl sm:text-2xl font-bold">Legal Documents Q&A</h1>
+					<p className="text-muted-foreground text-xs sm:text-sm">
 						Ask questions about your legal documents
 					</p>
 				</div>
 
 				{/* Messages Area */}
-				<div className="flex-1 overflow-hidden py-4">
-					<Card className="h-full py-2 pl-4 pr-1">
-						<ScrollArea className="h-full pr-4">
+				<div className="flex-1 overflow-hidden py-2 sm:py-4">
+					<Card className="h-full py-2 pl-2 sm:pl-4 pr-1">
+						<ScrollArea className="h-full pr-2 sm:pr-4">
 							{messages.length === 0 ? (
 								<div className="flex items-center justify-center h-full text-muted-foreground">
-									<div className="text-center space-y-2">
-										<p className="text-lg">No messages yet</p>
-										<p className="text-sm">
+									<div className="text-center space-y-2 px-4">
+										<p className="text-base sm:text-lg">No messages yet</p>
+										<p className="text-xs sm:text-sm">
 											Start a conversation by asking a question below
 										</p>
 									</div>
 								</div>
 							) : (
-								<div className="space-y-4">
+								<div className="space-y-3 sm:space-y-4">
 									{messages.map((message) => (
 										<div
 											key={message.id}
-											className={`flex gap-3 ${
+											className={`flex gap-2 sm:gap-3 ${
 												message.role === "user"
 													? "justify-end"
 													: "justify-start"
 											}`}
 										>
 											{message.role === "assistant" && (
-												<Avatar className="h-8 w-8">
-													<AvatarFallback className="bg-primary text-primary-foreground">
+												<Avatar className="h-6 w-6 sm:h-8 sm:w-8 shrink-0">
+													<AvatarFallback className="bg-primary text-primary-foreground text-xs sm:text-sm">
 														AI
 													</AvatarFallback>
 												</Avatar>
 											)}
 											<div
-												className={`max-w-[70%] rounded-lg px-4 py-2 ${
+												className={`max-w-[85%] sm:max-w-[70%] rounded-lg px-3 sm:px-4 py-2 ${
 													message.role === "user"
 														? "bg-primary text-primary-foreground"
 														: "bg-muted"
 												}`}
 											>
 												{message.role === "user" ? (
-													<p className="whitespace-pre-wrap">
+													<p className="whitespace-pre-wrap text-sm sm:text-base">
 														{message.content}
 													</p>
 												) : (
@@ -148,15 +148,17 @@ export default function ChatPage() {
 															remarkPlugins={[remarkGfm]}
 															components={{
 																p: ({ children }) => (
-																	<p className="mb-2 last:mb-0">{children}</p>
+																	<p className="mb-2 last:mb-0 text-sm sm:text-base">
+																		{children}
+																	</p>
 																),
 																ul: ({ children }) => (
-																	<ul className="my-2 list-disc list-inside">
+																	<ul className="my-2 list-disc list-inside text-sm sm:text-base">
 																		{children}
 																	</ul>
 																),
 																ol: ({ children }) => (
-																	<ol className="my-2 list-decimal list-inside">
+																	<ol className="my-2 list-decimal list-inside text-sm sm:text-base">
 																		{children}
 																	</ol>
 																),
@@ -195,8 +197,8 @@ export default function ChatPage() {
 												)}
 											</div>
 											{message.role === "user" && (
-												<Avatar className="h-8 w-8">
-													<AvatarFallback className="bg-secondary">
+												<Avatar className="h-6 w-6 sm:h-8 sm:w-8 shrink-0">
+													<AvatarFallback className="bg-secondary text-xs sm:text-sm">
 														You
 													</AvatarFallback>
 												</Avatar>
@@ -204,14 +206,16 @@ export default function ChatPage() {
 										</div>
 									))}
 									{isLoading && (
-										<div className="flex gap-3 justify-start">
-											<Avatar className="h-8 w-8">
-												<AvatarFallback className="bg-primary text-primary-foreground">
+										<div className="flex gap-2 sm:gap-3 justify-start">
+											<Avatar className="h-6 w-6 sm:h-8 sm:w-8 shrink-0">
+												<AvatarFallback className="bg-primary text-primary-foreground text-xs sm:text-sm">
 													AI
 												</AvatarFallback>
 											</Avatar>
-											<div className="bg-muted rounded-lg px-4 py-2">
-												<p className="text-muted-foreground">Thinking...</p>
+											<div className="bg-muted rounded-lg px-3 sm:px-4 py-2">
+												<p className="text-muted-foreground text-sm">
+													Thinking...
+												</p>
 											</div>
 										</div>
 									)}
@@ -223,13 +227,13 @@ export default function ChatPage() {
 				</div>
 
 				{/* Input Area */}
-				<div className="pb-4 space-y-2">
+				<div className="pb-2 sm:pb-4 space-y-2">
 					<form onSubmit={handleSubmit} className="flex gap-2">
 						<Textarea
 							value={input}
 							onChange={(e) => setInput(e.target.value)}
 							placeholder="Ask a question about your legal documents..."
-							className="min-h-[55px] max-h-[200px] resize-none"
+							className="min-h-[55px] sm:min-h-[55px] max-h-[200px] resize-none text-sm sm:text-base"
 							onKeyDown={(e) => {
 								if (e.key === "Enter" && !e.shiftKey) {
 									e.preventDefault();
@@ -241,9 +245,9 @@ export default function ChatPage() {
 							type="submit"
 							size="icon"
 							disabled={!input.trim() || isLoading}
-							className="h-[55px] w-[60px]"
+							className="h-[55px] w-[55px] sm:h-[55px] sm:w-[55px] shrink-0"
 						>
-							<Send className="h-5 w-5" />
+							<Send className="h-4 w-4 sm:h-5 sm:w-5" />
 						</Button>
 					</form>
 				</div>
