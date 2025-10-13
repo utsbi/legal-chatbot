@@ -4,11 +4,8 @@ import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase"
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { createClient } from "@supabase/supabase-js";
-import Canvas from "canvas";
 import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
 import { TextLoader } from "langchain/document_loaders/fs/text";
-
-(global as any).DOMMatrix = Canvas.DOMMatrix;
 
 const documentsPath = process.env.LEGAL_FILES_PATH;
 if (!documentsPath) throw new Error(`Expected env var LEGAL_FILES_PATH`);
