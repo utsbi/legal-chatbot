@@ -1,35 +1,11 @@
-import { TaskType } from "@google/generative-ai";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
-import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
-import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
-import { createClient } from "@supabase/supabase-js";
 import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
 import { TextLoader } from "langchain/document_loaders/fs/text";
+import { vectorStore } from "./utils";
 
 const documentsPath = process.env.LEGAL_FILES_PATH;
 if (!documentsPath) throw new Error(`Expected env var LEGAL_FILES_PATH`);
-
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-if (!supabaseKey) throw new Error(`Expected env var SUPABASE_SERVICE_ROLE_KEY`);
-
-const url = process.env.SUPABASE_URL;
-if (!url) throw new Error(`Expected env var SUPABASE_URL`);
-
-// Embeddings
-const embeddings = new GoogleGenerativeAIEmbeddings({
-	model: "gemini-embedding-001",
-	apiKey: process.env.GOOGLE_API_KEY,
-	taskType: TaskType.RETRIEVAL_DOCUMENT,
-});
-
-// Vector Store
-const supabaseClient = createClient(url, supabaseKey);
-const vectorStore = new SupabaseVectorStore(embeddings, {
-	client: supabaseClient,
-	tableName: "legal_documents",
-	queryName: "match_documents",
-});
 
 // Load documents from the specified directory
 const directoryLoader = new DirectoryLoader(documentsPath, {
@@ -38,6 +14,7 @@ const directoryLoader = new DirectoryLoader(documentsPath, {
 			pdfjs: () => import("pdfjs-dist/legacy/build/pdf.mjs"),
 		}),
 	".md": (path: string) => new TextLoader(path),
+	// add other file types here as needed
 });
 
 const docs = await directoryLoader.load();
